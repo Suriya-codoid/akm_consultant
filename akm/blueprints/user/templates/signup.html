@@ -1,0 +1,29 @@
+{% extends "layouts/auth.html" %}
+{% from "macros/form_macros.html" import render_field %}
+{% block auth_content %}
+
+    <div class="login-card card-block auth-body">
+        <form class="md-float-material" action="/signup" method="POST">
+            {{ signup.csrf_token }}
+            <div class="auth-box">
+                <div class="row m-b-20">
+                    <div class="col-md-12">
+                        <h3 class="text-center txt-primary">Sign up.</h3>
+                    </div>
+                </div>
+                <hr/>
+                {{ render_field(signup.full_name,placeholder="Full Name" ) }}
+                {{ render_field(signup.email,placeholder="Email Address") }}
+                {{ render_field(signup.password,placeholder="Password") }}
+                {{ render_field(signup.confirm_password,placeholder="Confirm Password") }}
+                <div class="row m-t-30">
+                    <div class="col-md-12">
+                        {{ signup.submit(class_="btn btn-primary btn-md btn-block waves-effect text-center m-b-20") }}
+                    </div>
+                </div>
+                <hr/>
+            </div>
+        </form>
+        <!-- end of form -->
+    </div>
+{% endblock %}

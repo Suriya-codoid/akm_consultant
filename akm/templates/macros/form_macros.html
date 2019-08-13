@@ -1,0 +1,18 @@
+{% macro render_field(field) -%}
+    <div class="form-group row">
+        <div class="col-sm-12">
+            {{ field(class_='form-control   ', **kwargs) }}
+            {% if field.errors %}
+                <div class="col-form-label form-txt-danger">
+                    <ul class=errors>
+                        {% for e in field.errors %}
+                            <li style="color:red;">{{ e }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        <span class="messages"></span>
+        </div>
+
+    </div>
+{% endmacro %}}

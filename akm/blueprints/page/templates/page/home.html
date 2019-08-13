@@ -1,0 +1,491 @@
+{% extends "layouts/app.html" %}
+{% block head %}
+    {{ super() }}
+    <style>
+        label.error {
+            color: #e91e63;
+        }
+
+        .view-mode {
+            border: 0;
+            background-color: lightgray;
+        }
+    </style>
+{% endblock %}
+{% block container %}
+    <div class="page-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="snackbar"></div>
+                {% if current_user.role != 'tech support' %}
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="text-center">
+                                <h4 class="text-primary">Submit Your Application</h4>
+                            </div>
+                        </div>
+                        <div class="card-block">
+
+                            <form id="application-form" method="post" novalidate enctype="multipart/form-data">
+
+                                <div class="form-group row">
+                                    <label for="full-name" class="col-sm-1 col-form-label">Full Name</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control " name="full-name" id="full-name">
+                                    </div>
+                                    <label for="middle-name" class="col-sm-2 col-form-label">Middle Name</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control" name="middle-name" id="middle-name">
+                                    </div>
+                                    <label for="last-name" class="col-sm-1 col-form-label">Last Name</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" name="last-name" id="last-name">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="current-address" class="col-sm-1 col-form-label">Current Address</label>
+                                    <div class="col-sm-11">
+                            <textarea type="text" class="form-control" name="current-address"
+                                      id="current-address"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="street-address" class="col-sm-1 col-form-label">Street Address</label>
+                                    <div class="col-sm-10">
+                            <textarea type="text" class="form-control" name="street-address"
+                                      id="street-address"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="district" class="col-sm-1 col-form-label">City</label>
+                                    <div class="col-sm-3">
+                                        <select type="text" class="form-control" name="district"
+                                                id="district">
+                                            <option selected value="">Select District</option>
+                                            <option value="Chennai">Chennai</option>
+                                            <option value="Trichy">Trichy</option>
+                                            <option value="Pudukkottai">Pudukkottai</option>
+                                            <option value="Coimbatore">Coimbatore</option>
+                                        </select>
+                                    </div>
+                                    <label for="state" class="col-sm-1 col-form-label">State</label>
+                                    <div class="col-sm-3">
+                                        <select type="text" class="form-control" name="state"
+                                                id="state">
+                                            <option selected value="">Select State</option>
+                                            <option value="Tamilnadu">Tamilnadu</option>
+                                        </select>
+                                    </div>
+                                    <label for="pin-code" class="col-sm-1 col-form-label">Pin Code</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" name="pin-code" id="pin-code">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="email" class="col-sm-1 col-form-label">Email</label>
+                                    <div class="col-sm-3">
+                                        <input type="email" class="form-control" name="email" id="email">
+                                    </div>
+                                    <label for="mobile-number" class="col-sm-1 col-form-label">Mobile Number</label>
+                                    <div class="col-sm-3">
+                                        <input type="number" class="form-control" name="mobile-number"
+                                               id="mobile-number">
+                                    </div>
+                                    <label for="date-of-birth" class="col-sm-1 col-form-label">Date of Birth</label>
+                                    <div class="col-sm-3">
+                                        <input type="date" class="form-control" name="date-of-birth" id="date-of-birth">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="position" class=" col-sm-2 col-form-label">Applying for Position</label>
+                                    <div class="col-sm-4">
+                                        <select type="text" class="form-control" name="position"
+                                                id="position">
+                                            <option selected value="">Select Position</option>
+                                            <option value="Developer">Developer</option>
+                                            <option value="Automation Tester">Automation Tester</option>
+                                            <option value="Manual Tester">Manual Tester</option>
+                                            <option value="Support Engineer">Support Engineer</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <div class="card-footer">
+                                    <div class="f-right">
+                                        <button type="reset" class="btn btn-default ">Reset</button>
+                                        <button type="submit" class="btn  btn-primary ">Submit</button>
+
+                                    </div>
+
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                {% endif %}
+                {% if current_user.role == 'tech support' %}
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="text-center"><h4 class="text-primary">Reviews of Apllication</h4></div>
+                        </div>
+                        <div class="card-block">
+                            <div class="dt-responsive  table-responsive">
+                                <table id="list-details" class="display table table-xs nowrap asset_table"
+                                       cellspacing="0"
+                                       style="width:100%">
+                                    <thead>
+                                    <tr class="bg-primary">
+                                        <th>id</th>
+                                        <th>Applicant Name</th>
+                                        <th>Applicant E-mail</th>
+                                        <th>status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="view-application-modal" tabindex="-1" role="dialog"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Application Details</h4>
+                    <div class="card-header-right" style="background: #fff">
+                        <button type="button" class="close" id="">
+                            <span aria-hidden="false">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="view-full-name" class="col-sm-1 col-form-label">Full Name</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control view-mode" name="full-name" id="view-full-name">
+                        </div>
+                        <label for="view-middle-name" class="col-sm-2 col-form-label">Middle Name</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control view-mode" name="middle-name" id="view-middle-name">
+                        </div>
+                        <label for="view-last-name" class="col-sm-1 col-form-label">Last Name</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control view-mode" name="last-name" id="view-last-name">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="view-current-address" class="col-sm-1 col-form-label">Current Address</label>
+                        <div class="col-sm-11">
+                            <textarea type="text" class="form-control view-mode" name="current-address"
+                                      id="view-current-address"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="street-address" class="col-sm-1 col-form-label">Street Address</label>
+                        <div class="col-sm-10">
+                            <textarea type="text" class="form-control view-mode" name="street-address"
+                                      id="view-street-address"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="view-district" class="col-sm-1 col-form-label">City</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control view-mode" name="district"
+                                   id="view-district"/>
+                        </div>
+                        <label for="view-state" class="col-sm-1 col-form-label">State</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control view-mode" name="state"
+                                   id="view-state"/>
+                        </div>
+                        <label for="view-pin-code" class="col-sm-1 col-form-label">Pin Code</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control view-mode" name="pin-code" id="view-pin-code">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="view-email" class="col-sm-1 col-form-label">Email</label>
+                        <div class="col-sm-3">
+                            <input type="email" class="form-control view-mode" name="email" id="view-email">
+                        </div>
+                        <label for="view-mobile-number" class="col-sm-1 col-form-label">Mobile Number</label>
+                        <div class="col-sm-3">
+                            <input type="number" class="form-control view-mode" name="mobile-number"
+                                   id="view-mobile-number">
+                        </div>
+                        <label for="view-date-of-birth" class="col-sm-1 col-form-label">Date of Birth</label>
+                        <div class="col-sm-3">
+                            <input type="date" class="form-control view-mode" name="date-of-birth"
+                                   id="view-date-of-birth">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="view-position" class=" col-sm-2 col-form-label">Applying for Position</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control view-mode" name="position"
+                                   id="view-position"/>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jquery %}
+    {{ super() }}
+    <script>
+
+        $(document).ready(function () {
+            $('#application-form').validate({ // initialize the plugin
+                rules: {
+                    "full-name": {
+                        required: true,
+                        maxlength: 40,
+                        minlength: 3
+
+                    },
+                    "current-address": {
+                        required: true,
+                        maxlength: 200,
+                        minlength: 10
+                    },
+                    "district": {
+                        required: true,
+                    },
+                    "state": {
+                        required: true
+                    },
+                    "pin-code": {
+                        required: true
+                    },
+                    "email": {
+                        required: true
+                    },
+                    "mobile-number": {
+                        required: true,
+                        maxlength: 10,
+                        minlength: 10
+                    },
+                    "date-of-birth": {
+                        required: true
+                    },
+                    "position": {
+                        required: true
+                    },
+                    "resume": {
+                        required: true
+                    }
+
+                },
+                messages: {
+                    "full-name": {
+                        required: "*Full Name is Required",
+                        maxlength: "*Full Name should be less than 40 characters",
+                        minlength: "*Full Name should be greater than 3 characters"
+
+                    },
+                    "current-address": {
+                        required: "*Current Address is Required",
+                        maxlength: "*Current Address should be less than 40 characters",
+                        minlength: "*Current Address should be greater than 10 characters"
+                    },
+                    "district": {
+                        required: "*District is Required",
+                    },
+                    "state": {
+                        required: "*State is Required"
+                    },
+                    "pin-code": {
+                        required: "*Pin-code is Required"
+                    },
+                    "email": {
+                        required: "*Email is Required"
+                    },
+                    "mobile-number": {
+                        required: "*Mobile Number is Required",
+                        maxlength: "*Mobile Number should be 10 digits",
+                        minlength: "*Mobile Number should be 10 digits"
+                    },
+                    "date-of-birth": {
+                        required: "*Date of Birth is Required"
+                    },
+                    "position": {
+                        required: "*Position is required"
+                    },
+                    "resume": {
+                        required: "*Resume is required"
+                    }
+                },
+                submitHandler: function (e) {
+                    var values = jQuery("#application-form").serializeArray();
+                    $.ajaxSetup({
+                        beforeSend: function (xhr, settings) {
+                            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", "{{csrf_token()}}")
+                            }
+                        }
+                    });
+                    $.ajax({
+                        url: '/home',
+                        type: 'POST',
+                        data: values,
+                    }).done(function (response) {
+                        if (response.status === "pass") {
+                            $("#application-form")[0].reset();
+                            myFunction(response.message)
+                        } else {
+                            myFunction(response.message)
+                        }
+                    });
+                }
+            });
+
+            function myFunction(message) {
+                $("#snackbar").text(message);
+                var x = document.getElementById("snackbar");
+                x.className = "show";
+                setTimeout(function () {
+                    x.className = x.className.replace("show", "");
+                }, 3000);
+            }
+        });
+
+        var list_details = $('#list-details').DataTable({
+
+            "serverSide": true,
+            "destroy": true,
+            "processing": true,
+            "pagingType": "full_numbers",
+            "ajax": {
+                "url": "/listDetails",
+                "headers": {
+                    'X-CSRFToken': "{{csrf_token()}}"
+                }
+            },
+            "pageLength": 10,
+            "language": {
+                search: "_INPUT_",
+                searchPlaceholder: "Search Here...",
+                processing: '<span style="width:100%;"><img src="http://www.snacklocal.com/images/ajaxload.gif"></span>'
+            },
+            "ordering": false,
+            'columnDefs': [
+                {
+                    "targets": 0,
+                    "visible": false,
+                },
+                {
+                    "targets": -2,
+                    "render": function (data, type, full, meta) {
+                        if (parseInt(data) === 1 || data === true) {
+                            return "<label class=\"label label-inverse-success\">Accepted</label>"
+                        } else {
+                            return "<label class=\"label label-inverse-danger\">Rejected</label>"
+                        }
+
+                    }
+                },
+                {
+                    "targets": -1,
+                    "render": function (data, type, full, meta) {
+                        return "<i class=\"icofont icofont-ui-edit\" " +
+                            "style=\"margin-right: 16px;\" " +
+                            "aria-hidden=\"true\" title=\"Action\" id=\"action\"></i><i class=\"icofont icofont-eye-alt text-info\" " +
+                            "style=\"margin-right: 16px; font-size: 18px\" " +
+                            "aria-hidden=\"true\" title=\"View Application\" id=\"view\"></i>"
+                    }
+                }
+            ]
+        });
+        $(document.body).on("click", "#action", function () {
+            var tr = $(this).closest('tr');
+            var data = $('#list-details').dataTable().fnGetData(tr);
+            var stat = data['3'] === true ? "Reject" : "Accept";
+            statusOfApps(data['0'], stat)
+        }).on("click", "#view", function () {
+            var tr = $(this).closest('tr');
+            var data = $('#list-details').dataTable().fnGetData(tr);
+            $("#view-application-modal").modal('show');
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{csrf_token()}}")
+                    }
+                }
+            });
+            $.ajax({
+                'url': '/getDetails',
+                'data': {
+                    id: data['0']
+                },
+                'type': 'GET',
+                'datatype': 'json',
+                'success': function (response) {
+                    console.log(response.details)
+                    $.each(response.details[0], function (key, val) {
+                        console.log(key, val)
+                        $('#view-'.concat(key)).val(val);
+                    })
+                }
+            });
+        }).on("click", ".close", function () {
+            $("#view-application-modal").modal('hide');
+        });
+
+        function statusOfApps(id, status) {
+            swal({
+                    title: "Are you sure !",
+                    text: "Do you want to " + status + " this Application?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, " + status + "..!",
+                    cancelButtonText: "Cancel",
+                    closeOnConfirm: false,
+                    closeOnCancel: true,
+                    showLoaderOnConfirm: true,
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajaxSetup({
+                            beforeSend: function (xhr, settings) {
+                                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", "{{csrf_token()}}")
+                                }
+                            }
+                        });
+                        $.ajax({
+                            'url': '/changeStatus',
+                            'data': {
+                                id: id,
+                                status: status
+                            },
+                            'type': 'POST',
+                            'datatype': 'json',
+                            'success': function (response) {
+                                $('#list-details').DataTable().ajax.reload();
+                                if (response.status === "pass") {
+                                    swal("Added!", " " + response.message, "success");
+                                } else {
+                                    swal("Cancelled", " " + response.message, "error");
+                                }
+                            }
+                        });
+                    } else {
+                        {#swal("Cancelled", "Somthing went wrong:)", "error");#}
+                    }
+                });
+        }
+
+    </script>
+
+{% endblock %}
